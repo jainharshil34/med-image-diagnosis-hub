@@ -41,6 +41,12 @@ const Index = () => {
       title: "Multi-Modal Detection",
       description: "Detect fractures, pneumonia, tumors, and 50+ other conditions across body systems",
       stats: "50+ conditions"
+    },
+    {
+      icon: CheckCircle,
+      title: "Explainable AI (XAI)",
+      description: "Visual explanations and heatmaps showing exactly where the AI detected abnormalities for complete transparency",
+      stats: "100% transparent"
     }
   ];
 
