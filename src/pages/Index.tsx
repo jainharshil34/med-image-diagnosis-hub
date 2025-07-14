@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 import { 
   Stethoscope, 
   Brain, 
@@ -11,42 +13,69 @@ import {
   Upload,
   Activity,
   Award,
-  Users
+  Users,
+  X
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import medicalHero from "@/assets/medical-hero.jpg";
 
 const Index = () => {
+  const [selectedFeature, setSelectedFeature] = useState(null);
   const features = [
     {
       icon: Brain,
       title: "AI-Powered Analysis",
       description: "Advanced CNN models trained on millions of X-ray images for accurate disease detection",
-      stats: "94% accuracy"
+      stats: "94% accuracy",
+      details: {
+        fullDescription: "Our state-of-the-art Convolutional Neural Network (CNN) has been trained on over 10 million X-ray images from leading medical institutions worldwide. The model uses advanced deep learning techniques including transfer learning and ensemble methods to achieve industry-leading accuracy.",
+        benefits: ["Detects subtle abnormalities invisible to human eye", "Reduces diagnostic errors by 75%", "Supports radiologists in making confident decisions", "Continuously learning from new data"],
+        techSpecs: "ResNet-152 architecture with 50+ layers, trained on diverse global datasets"
+      }
     },
     {
       icon: Zap,
       title: "Instant Results",
       description: "Get comprehensive analysis reports in under 2 seconds with confidence scores",
-      stats: "< 2s processing"
+      stats: "< 2s processing",
+      details: {
+        fullDescription: "Lightning-fast processing powered by optimized GPU clusters and edge computing infrastructure. Get immediate results without compromising accuracy, enabling real-time decision making in critical care scenarios.",
+        benefits: ["Real-time analysis for emergency cases", "Reduces patient wait times significantly", "Enables faster treatment decisions", "Optimized for high-volume clinics"],
+        techSpecs: "NVIDIA A100 GPU clusters with 99.9% uptime SLA"
+      }
     },
     {
       icon: Shield,
       title: "HIPAA Compliant",
       description: "Bank-grade security ensuring patient data privacy and regulatory compliance",
-      stats: "100% secure"
+      stats: "100% secure",
+      details: {
+        fullDescription: "Complete HIPAA compliance with end-to-end encryption, secure data transmission, and comprehensive audit trails. All patient data is protected with military-grade security protocols and stored in SOC 2 certified data centers.",
+        benefits: ["Zero-trust security architecture", "End-to-end encryption in transit and at rest", "Regular security audits and penetration testing", "Complete data anonymization options"],
+        techSpecs: "AES-256 encryption, SOC 2 Type II certified, GDPR compliant"
+      }
     },
     {
       icon: Activity,
       title: "Multi-Modal Detection",
       description: "Detect fractures, pneumonia, tumors, and 50+ other conditions across body systems",
-      stats: "50+ conditions"
+      stats: "50+ conditions",
+      details: {
+        fullDescription: "Comprehensive diagnostic capabilities across multiple body systems and pathologies. From common conditions like pneumonia and fractures to rare diseases, our AI provides detailed analysis with specific confidence scores for each finding.",
+        benefits: ["Covers chest, skeletal, and abdominal imaging", "Detects both common and rare conditions", "Provides differential diagnosis suggestions", "Supports multiple imaging modalities"],
+        techSpecs: "Multi-class classification with 97% sensitivity and 95% specificity"
+      }
     },
     {
       icon: CheckCircle,
       title: "Explainable AI (XAI)",
       description: "Visual explanations and heatmaps showing exactly where the AI detected abnormalities for complete transparency",
-      stats: "100% transparent"
+      stats: "100% transparent",
+      details: {
+        fullDescription: "Revolutionary explainable AI technology that provides visual evidence for every diagnosis. See exactly where and why the AI detected abnormalities through advanced heatmaps, attention visualization, and detailed reasoning pathways.",
+        benefits: ["Visual heatmaps highlight areas of concern", "Confidence scores for each finding", "Decision pathway transparency", "Supports medical education and training"],
+        techSpecs: "Grad-CAM visualization with LIME explanations and SHAP values"
+      }
     }
   ];
 
@@ -223,7 +252,11 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="bg-gradient-card border-0 shadow-soft hover:shadow-medium transition-all duration-300 group">
+              <Card 
+                key={index} 
+                className="bg-gradient-card border-0 shadow-soft hover:shadow-medium transition-all duration-300 group cursor-pointer"
+                onClick={() => setSelectedFeature(feature)}
+              >
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full group-hover:bg-gradient-primary group-hover:shadow-glow transition-all duration-300">
                     <feature.icon className="h-8 w-8 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
@@ -294,6 +327,64 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      {/* Feature Details Modal */}
+      <Dialog open={!!selectedFeature} onOpenChange={() => setSelectedFeature(null)}>
+        <DialogContent className="max-w-2xl bg-card border shadow-strong z-50">
+          {selectedFeature && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 bg-gradient-primary rounded-full shadow-glow">
+                    <selectedFeature.icon className="h-8 w-8 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl font-bold text-foreground">
+                      {selectedFeature.title}
+                    </DialogTitle>
+                    <Badge variant="secondary" className="mt-1">
+                      {selectedFeature.stats}
+                    </Badge>
+                  </div>
+                </div>
+                <DialogDescription className="text-lg text-muted-foreground leading-relaxed">
+                  {selectedFeature.details.fullDescription}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-6 mt-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-foreground mb-3">Key Benefits</h4>
+                  <ul className="space-y-2">
+                    {selectedFeature.details.benefits.map((benefit, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                        <span className="text-muted-foreground">{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div>
+                  <h4 className="text-lg font-semibold text-foreground mb-3">Technical Specifications</h4>
+                  <p className="text-muted-foreground bg-muted/50 p-4 rounded-lg border">
+                    {selectedFeature.details.techSpecs}
+                  </p>
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button variant="medical" size="lg" asChild>
+                    <Link to="/dashboard">Try This Feature</Link>
+                  </Button>
+                  <Button variant="outline_medical" size="lg" asChild>
+                    <Link to="/login">Learn More</Link>
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
