@@ -19,6 +19,7 @@ import {
   FileText
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { MedicalUpload } from "@/components/MedicalUpload";
 import medicalHero from "@/assets/medical-hero.jpg";
 
 const Dashboard = () => {
@@ -119,74 +120,69 @@ const Dashboard = () => {
           ))}
         </div>
 
+        {/* CNN Model Integration Section */}
+        <div className="mb-8">
+          <MedicalUpload />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Upload Section */}
+          {/* Quick Stats */}
           <div className="lg:col-span-2">
             <Card className="bg-gradient-card border-0 shadow-medium">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Brain className="h-5 w-5 text-primary" />
-                  AI X-Ray Analysis
+                  CNN Model Performance
                 </CardTitle>
                 <CardDescription>
-                  Upload X-ray images for instant AI-powered medical analysis
+                  DenseNet121 architecture with multi-label classification
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div
-                  className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300 ${
-                    isDragOver
-                      ? "border-primary bg-primary/5 scale-105"
-                      : "border-border hover:border-primary/50 hover:bg-primary/5"
-                  }`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                >
-                  <div className="flex flex-col items-center justify-center space-y-4">
-                    <div className="p-4 bg-primary/10 rounded-full">
-                      <Upload className="h-8 w-8 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-foreground mb-2">
-                        Upload X-Ray Images
-                      </h3>
-                      <p className="text-muted-foreground mb-4">
-                        Drag and drop your X-ray files here, or click to browse
-                      </p>
-                      <Button variant="medical" size="lg" className="mb-2">
-                        Choose Files
-                      </Button>
-                      <p className="text-sm text-muted-foreground">
-                        Supports DICOM, PNG, JPG files up to 50MB
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Analysis Features */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-center gap-3 p-4 bg-success/10 rounded-lg">
                     <Shield className="h-5 w-5 text-success" />
                     <div>
-                      <p className="font-medium text-success">HIPAA Compliant</p>
-                      <p className="text-sm text-muted-foreground">Secure & Private</p>
+                      <p className="font-medium text-success">No Finding</p>
+                      <p className="text-sm text-muted-foreground">Primary Class</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-4 bg-warning/10 rounded-lg">
+                    <AlertTriangle className="h-5 w-5 text-warning" />
+                    <div>
+                      <p className="font-medium text-warning">Pneumonia</p>
+                      <p className="text-sm text-muted-foreground">Critical Detection</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-3 p-4 bg-primary/10 rounded-lg">
                     <Activity className="h-5 w-5 text-primary" />
                     <div>
-                      <p className="font-medium text-primary">Real-time Analysis</p>
-                      <p className="text-sm text-muted-foreground">Instant Results</p>
+                      <p className="font-medium text-primary">Other Diseases</p>
+                      <p className="text-sm text-muted-foreground">Multi-class</p>
                     </div>
                   </div>
-                  
-                  <div className="flex items-center gap-3 p-4 bg-accent/10 rounded-lg">
-                    <CheckCircle className="h-5 w-5 text-accent" />
+                </div>
+
+                <div className="mt-6 p-4 bg-card/50 rounded-lg">
+                  <h4 className="font-semibold text-foreground mb-2">Model Specifications</h4>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="font-medium text-accent">94% Accuracy</p>
-                      <p className="text-sm text-muted-foreground">Clinically Validated</p>
+                      <span className="text-muted-foreground">Architecture:</span>
+                      <span className="ml-2 font-medium">DenseNet121</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Loss Function:</span>
+                      <span className="ml-2 font-medium">Focal Loss (γ=2.0)</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Input Size:</span>
+                      <span className="ml-2 font-medium">224×224 pixels</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Format:</span>
+                      <span className="ml-2 font-medium">DICOM, JPEG, PNG</span>
                     </div>
                   </div>
                 </div>
