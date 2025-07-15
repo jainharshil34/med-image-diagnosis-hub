@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -15,11 +15,14 @@ import {
   Shield
 } from "lucide-react";
 import { XAIAnalysis } from "./XAIAnalysis";
+import { uploadXRayImage, subscribeToXRayStatus, getPredictions } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 interface UploadedFile {
+  id?: string;
   file: File;
   preview: string;
-  status: "uploading" | "processing" | "completed" | "error";
+  status: "uploading" | "analyzing" | "completed" | "error";
   progress: number;
 }
 
@@ -29,6 +32,7 @@ export const MedicalUpload = () => {
   const [analysisResults, setAnalysisResults] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const acceptedFormats = [".dcm", ".dicom", ".jpg", ".jpeg", ".png"];
   const maxFileSize = 50 * 1024 * 1024; // 50MB
@@ -90,7 +94,7 @@ export const MedicalUpload = () => {
           return {
             ...file,
             progress: newProgress,
-            status: newProgress === 100 ? "processing" : "uploading"
+            status: newProgress === 100 ? "analyzing" : "uploading"
           };
         }
         return file;
