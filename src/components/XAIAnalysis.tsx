@@ -1,4 +1,5 @@
 import { useState } from "react";
+import demoGradCam from "@/assets/demo-gradcam.jpg";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -164,30 +165,22 @@ export const XAIAnalysis = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {heatmapUrl ? (
-              <div className="relative rounded-lg overflow-hidden bg-muted/20 p-4">
-                <img 
-                  src={heatmapUrl} 
-                  alt="XAI Heatmap" 
-                  className="w-full h-auto rounded-lg"
-                />
-              </div>
-            ) : (
-              <div className="bg-muted/20 rounded-lg p-8 text-center">
-                <div className="p-4 bg-primary/10 rounded-full w-fit mx-auto mb-4">
-                  <Eye className="h-8 w-8 text-primary" />
+            <div className="relative rounded-lg overflow-hidden bg-muted/20 p-4">
+              <img 
+                src={heatmapUrl || demoGradCam} 
+                alt="XAI Heatmap showing AI attention areas" 
+                className="w-full h-auto rounded-lg"
+              />
+              {!heatmapUrl && (
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-lg">
+                  <div className="text-center text-white">
+                    <Eye className="h-8 w-8 mx-auto mb-2" />
+                    <p className="text-sm font-medium">Demo Grad-CAM Visualization</p>
+                    <p className="text-xs opacity-75">Production heatmap will appear here</p>
+                  </div>
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Heatmap Processing</h3>
-                <p className="text-muted-foreground mb-4">
-                  Grad-CAM visualization will appear here after backend integration
-                </p>
-                <div className="text-sm text-muted-foreground">
-                  • LIME explanations with SHAP values<br/>
-                  • Attention mechanism visualization<br/>
-                  • Decision pathway transparency
-                </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Action Buttons */}
             <div className="flex gap-2 pt-4">
