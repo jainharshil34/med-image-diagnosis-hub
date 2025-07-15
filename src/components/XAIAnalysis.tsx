@@ -38,11 +38,11 @@ export const XAIAnalysis = ({
 }: XAIAnalysisProps) => {
   const [selectedResult, setSelectedResult] = useState<PredictionResult | null>(null);
 
-  // Demo results matching your CNN model classes
+  // Demo results matching your exact CNN model classes
   const demoResults: PredictionResult[] = [
-    { condition: "No Finding", confidence: 85.2, severity: "low", color: "text-success" },
-    { condition: "Pneumonia", confidence: 12.1, severity: "medium", color: "text-warning" },
-    { condition: "Other Diseases", confidence: 2.7, severity: "low", color: "text-muted-foreground" }
+    { condition: "No finding", confidence: 78.4, severity: "low", color: "text-success" },
+    { condition: "Pneumonia", confidence: 18.7, severity: "medium", color: "text-warning" },
+    { condition: "Other disease", confidence: 2.9, severity: "low", color: "text-muted-foreground" }
   ];
 
   const displayResults = results.length > 0 ? results : demoResults;
@@ -82,7 +82,7 @@ export const XAIAnalysis = ({
       {/* Primary Diagnosis Alert */}
       {primaryDiagnosis && (
         <Alert className={`border-l-4 ${
-          primaryDiagnosis.condition === "No Finding" 
+          primaryDiagnosis.condition === "No finding" 
             ? "border-l-success bg-success/5" 
             : primaryDiagnosis.condition === "Pneumonia"
             ? "border-l-warning bg-warning/5"
@@ -119,10 +119,10 @@ export const XAIAnalysis = ({
               >
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-full ${
-                    result.condition === "No Finding" ? "bg-success/10" :
+                    result.condition === "No finding" ? "bg-success/10" :
                     result.condition === "Pneumonia" ? "bg-warning/10" : "bg-muted/10"
                   }`}>
-                    {result.condition === "No Finding" ? (
+                    {result.condition === "No finding" ? (
                       <CheckCircle2 className="h-4 w-4 text-success" />
                     ) : result.condition === "Pneumonia" ? (
                       <AlertTriangle className="h-4 w-4 text-warning" />
@@ -223,7 +223,7 @@ export const XAIAnalysis = ({
             </div>
             <div>
               <h4 className="font-semibold text-foreground mb-2">Classes</h4>
-              <p className="text-muted-foreground">Multi-label: No Finding, Pneumonia, Other Diseases</p>
+              <p className="text-muted-foreground">Multi-label: No finding, Pneumonia, Other disease</p>
             </div>
           </div>
         </CardContent>
