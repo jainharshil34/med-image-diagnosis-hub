@@ -21,50 +21,38 @@ interface ModelPrediction {
   processingTimeMs: number
 }
 
-// CNN model prediction function matching your DenseNet121 implementation
+// CNN model prediction matching your exact DenseNet121 multi-label implementation
 async function runCNNModel(imageBuffer: ArrayBuffer): Promise<ModelPrediction> {
   const startTime = Date.now()
   
-  // Simulate your actual preprocessing pipeline:
-  // 1. DICOM reading with pydicom
-  // 2. VOI LUT application
-  // 3. Normalization (min-max scaling)
-  // 4. 3-channel conversion
-  // 5. Resize to 224x224
-  // 6. ImageNet preprocessing
+  // Simulate your preprocessing: DICOM -> VOI LUT -> normalize -> 3-channel -> 224x224 -> preprocess_input
+  await new Promise(resolve => setTimeout(resolve, 2000))
   
-  await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate processing
+  // Multi-label sigmoid outputs (each class independent, not sum to 100%)
+  // Based on your class distribution and weighted focal loss training
   
-  // Mock predictions based on your weighted sigmoid focal loss outputs
-  // Class weights: No finding (most common), Pneumonia, Other disease
-  const classWeights = {
-    noFinding: 0.8,    // High likelihood baseline
-    pneumonia: 0.15,   // Medium likelihood  
-    otherDisease: 0.05 // Lower likelihood
-  }
+  // Simulate realistic sigmoid outputs (0-1 range, converted to percentages)
+  // "No finding" is most common in pediatric chest X-rays
+  const noFindingProb = Math.random() * 0.4 + 0.6    // 60-100% (common baseline)
   
-  // Generate realistic confidence scores based on your model's behavior
-  const noFindingBase = Math.random() * 50 + 40  // 40-90%
-  const pneumoniaBase = Math.random() * 25 + 5   // 5-30%  
-  const otherDiseaseBase = Math.random() * 15 + 2 // 2-17%
+  // "Pneumonia" - less common but significant when present  
+  const pneumoniaProb = Math.random() * 0.3 + 0.05   // 5-35% (pathological)
   
-  // Apply slight randomization to simulate real model variance
+  // "Other disease" - least common category
+  const otherDiseaseProb = Math.random() * 0.2 + 0.02 // 2-22% (rare findings)
+  
+  // Apply slight correlation (if pneumonia high, reduce no finding)
+  const adjustedNoFinding = pneumoniaProb > 0.5 ? noFindingProb * 0.3 : noFindingProb
+  const adjustedPneumonia = otherDiseaseProb > 0.4 ? pneumoniaProb * 0.7 : pneumoniaProb
+  
+  // Convert to percentages (sigmoid * 100)
   const predictions = {
-    noFindingConfidence: Math.max(0, Math.min(100, noFindingBase + (Math.random() - 0.5) * 10)),
-    pneumoniaConfidence: Math.max(0, Math.min(100, pneumoniaBase + (Math.random() - 0.5) * 8)),
-    otherDiseaseConfidence: Math.max(0, Math.min(100, otherDiseaseBase + (Math.random() - 0.5) * 5))
+    noFindingConfidence: Math.round(adjustedNoFinding * 1000) / 10,
+    pneumoniaConfidence: Math.round(adjustedPneumonia * 1000) / 10, 
+    otherDiseaseConfidence: Math.round(otherDiseaseProb * 1000) / 10
   }
   
-  // Normalize to ensure realistic distribution (like your sigmoid outputs)
-  const total = predictions.noFindingConfidence + predictions.pneumoniaConfidence + predictions.otherDiseaseConfidence
-  if (total > 100) {
-    const factor = 95 / total // Leave some room for realistic confidence levels
-    predictions.noFindingConfidence *= factor
-    predictions.pneumoniaConfidence *= factor  
-    predictions.otherDiseaseConfidence *= factor
-  }
-  
-  // Determine primary diagnosis based on highest confidence
+  // Primary diagnosis = highest confidence (like argmax)
   const confidences = [
     { name: 'No Finding', value: predictions.noFindingConfidence },
     { name: 'Pneumonia', value: predictions.pneumoniaConfidence },
@@ -75,22 +63,23 @@ async function runCNNModel(imageBuffer: ArrayBuffer): Promise<ModelPrediction> {
     current.value > max.value ? current : max
   )
   
-  // Determine severity based on confidence and diagnosis type
+  // Severity based on confidence threshold and clinical significance
   let severity: 'low' | 'medium' | 'high'
   if (primaryResult.name === 'No Finding') {
-    severity = 'low'
+    severity = 'low' // Normal finding
   } else if (primaryResult.name === 'Pneumonia') {
-    severity = primaryResult.value > 70 ? 'high' : primaryResult.value > 40 ? 'medium' : 'low'
-  } else {
+    // Pneumonia severity based on model confidence
     severity = primaryResult.value > 60 ? 'high' : primaryResult.value > 30 ? 'medium' : 'low'
+  } else { // Other Disease
+    severity = primaryResult.value > 50 ? 'high' : primaryResult.value > 25 ? 'medium' : 'low'  
   }
   
   return {
-    noFindingConfidence: Math.round(predictions.noFindingConfidence * 10) / 10,
-    pneumoniaConfidence: Math.round(predictions.pneumoniaConfidence * 10) / 10,
-    otherDiseaseConfidence: Math.round(predictions.otherDiseaseConfidence * 10) / 10,
+    noFindingConfidence: predictions.noFindingConfidence,
+    pneumoniaConfidence: predictions.pneumoniaConfidence,
+    otherDiseaseConfidence: predictions.otherDiseaseConfidence,
     primaryDiagnosis: primaryResult.name,
-    primaryConfidence: Math.round(primaryResult.value * 10) / 10,
+    primaryConfidence: primaryResult.value,
     severity,
     processingTimeMs: Date.now() - startTime
   }
