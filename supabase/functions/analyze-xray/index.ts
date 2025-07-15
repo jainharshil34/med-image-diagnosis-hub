@@ -21,67 +21,47 @@ interface ModelPrediction {
   processingTimeMs: number
 }
 
-// CNN model prediction matching your exact DenseNet121 multi-label implementation
+// Call your actual Python CNN model server
 async function runCNNModel(imageBuffer: ArrayBuffer): Promise<ModelPrediction> {
   const startTime = Date.now()
   
-  // Simulate your preprocessing: DICOM -> VOI LUT -> normalize -> 3-channel -> 224x224 -> preprocess_input
-  await new Promise(resolve => setTimeout(resolve, 2000))
-  
-  // Multi-label sigmoid outputs (each class independent, not sum to 100%)
-  // Based on your class distribution and weighted focal loss training
-  
-  // Simulate realistic sigmoid outputs (0-1 range, converted to percentages)
-  // "No finding" is most common in pediatric chest X-rays
-  const noFindingProb = Math.random() * 0.4 + 0.6    // 60-100% (common baseline)
-  
-  // "Pneumonia" - less common but significant when present  
-  const pneumoniaProb = Math.random() * 0.3 + 0.05   // 5-35% (pathological)
-  
-  // "Other disease" - least common category
-  const otherDiseaseProb = Math.random() * 0.2 + 0.02 // 2-22% (rare findings)
-  
-  // Apply slight correlation (if pneumonia high, reduce no finding)
-  const adjustedNoFinding = pneumoniaProb > 0.5 ? noFindingProb * 0.3 : noFindingProb
-  const adjustedPneumonia = otherDiseaseProb > 0.4 ? pneumoniaProb * 0.7 : pneumoniaProb
-  
-  // Convert to percentages (sigmoid * 100)
-  const predictions = {
-    noFindingConfidence: Math.round(adjustedNoFinding * 1000) / 10,
-    pneumoniaConfidence: Math.round(adjustedPneumonia * 1000) / 10, 
-    otherDiseaseConfidence: Math.round(otherDiseaseProb * 1000) / 10
-  }
-  
-  // Primary diagnosis = highest confidence (like argmax)
-  const confidences = [
-    { name: 'No Finding', value: predictions.noFindingConfidence },
-    { name: 'Pneumonia', value: predictions.pneumoniaConfidence },
-    { name: 'Other Disease', value: predictions.otherDiseaseConfidence }
-  ]
-  
-  const primaryResult = confidences.reduce((max, current) => 
-    current.value > max.value ? current : max
-  )
-  
-  // Severity based on confidence threshold and clinical significance
-  let severity: 'low' | 'medium' | 'high'
-  if (primaryResult.name === 'No Finding') {
-    severity = 'low' // Normal finding
-  } else if (primaryResult.name === 'Pneumonia') {
-    // Pneumonia severity based on model confidence
-    severity = primaryResult.value > 60 ? 'high' : primaryResult.value > 30 ? 'medium' : 'low'
-  } else { // Other Disease
-    severity = primaryResult.value > 50 ? 'high' : primaryResult.value > 25 ? 'medium' : 'low'  
-  }
-  
-  return {
-    noFindingConfidence: predictions.noFindingConfidence,
-    pneumoniaConfidence: predictions.pneumoniaConfidence,
-    otherDiseaseConfidence: predictions.otherDiseaseConfidence,
-    primaryDiagnosis: primaryResult.name,
-    primaryConfidence: primaryResult.value,
-    severity,
-    processingTimeMs: Date.now() - startTime
+  try {
+    // Create form data with the image
+    const formData = new FormData()
+    formData.append('image', new Blob([imageBuffer]))
+    
+    // Call your Python model server
+    const MODEL_SERVER_URL = Deno.env.get('MODEL_SERVER_URL') || 'http://localhost:5000'
+    
+    const response = await fetch(`${MODEL_SERVER_URL}/predict`, {
+      method: 'POST',
+      body: formData
+    })
+    
+    if (!response.ok) {
+      throw new Error(`Model server error: ${response.statusText}`)
+    }
+    
+    const result = await response.json()
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Model prediction failed')
+    }
+    
+    return {
+      noFindingConfidence: result.predictions.no_finding_confidence,
+      pneumoniaConfidence: result.predictions.pneumonia_confidence,
+      otherDiseaseConfidence: result.predictions.other_disease_confidence,
+      primaryDiagnosis: result.primary_diagnosis,
+      primaryConfidence: result.primary_confidence,
+      severity: result.severity,
+      processingTimeMs: Date.now() - startTime,
+      heatmapBase64: result.heatmap_base64
+    }
+    
+  } catch (error) {
+    console.error('CNN Model Error:', error)
+    throw new Error(`Model inference failed: ${error.message}`)
   }
 }
 
