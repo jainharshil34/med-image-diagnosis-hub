@@ -123,17 +123,82 @@ export const MedicalUpload = () => {
     setIsAnalyzing(true);
     setAnalysisResults(null);
 
-    // Simulate CNN model analysis
-    setTimeout(() => {
-      setIsAnalyzing(false);
-      setAnalysisResults({
-        predictions: [
-          { condition: "No Finding", confidence: 85.2, severity: "low" },
-          { condition: "Pneumonia", confidence: 12.1, severity: "medium" },
-          { condition: "Other Diseases", confidence: 2.7, severity: "low" }
-        ]
+    try {
+      // Upload the first completed file for analysis
+      const fileToAnalyze = completedFiles[0];
+      if (!fileToAnalyze) {
+        throw new Error('No files to analyze');
+      }
+
+      // Upload and trigger analysis
+      const uploadResult = await uploadXRayImage(fileToAnalyze.file);
+      
+      if (!uploadResult.success) {
+        throw new Error(uploadResult.error || 'Upload failed');
+      }
+
+      const xrayImageId = uploadResult.data.xrayImageId;
+
+      // Subscribe to status updates
+      const subscription = subscribeToXRayStatus(xrayImageId, async (payload) => {
+        const status = payload.new.status;
+        
+        if (status === 'completed') {
+          // Get the actual predictions
+          const predictionsResult = await getPredictions(xrayImageId);
+          
+          if (predictionsResult.success && predictionsResult.data && predictionsResult.data.length > 0) {
+            const prediction = predictionsResult.data[0];
+            
+            // Convert to expected format for XAIAnalysis component
+            const results = [
+              { 
+                condition: "No finding", 
+                confidence: prediction.no_finding_confidence, 
+                severity: prediction.severity,
+                color: "text-success" 
+              },
+              { 
+                condition: "Pneumonia", 
+                confidence: prediction.pneumonia_confidence, 
+                severity: prediction.severity,
+                color: "text-warning" 
+              },
+              { 
+                condition: "Other disease", 
+                confidence: prediction.other_diseases_confidence, 
+                severity: prediction.severity,
+                color: "text-muted-foreground" 
+              }
+            ];
+
+            setAnalysisResults({
+              predictions: results,
+              heatmapUrl: prediction.heatmap_path,
+              predictionId: prediction.id
+            });
+          }
+          
+          setIsAnalyzing(false);
+          subscription.unsubscribe();
+        } else if (status === 'failed') {
+          throw new Error('Analysis failed');
+        }
       });
-    }, 3000);
+
+      toast({
+        title: "Analysis Started",
+        description: "Your CNN model is processing the X-ray image...",
+      });
+
+    } catch (error) {
+      setIsAnalyzing(false);
+      toast({
+        title: "Analysis Failed",
+        description: error instanceof Error ? error.message : "Failed to analyze image",
+        variant: "destructive",
+      });
+    }
   };
 
   const completedFiles = files.filter(f => f.status === "completed");

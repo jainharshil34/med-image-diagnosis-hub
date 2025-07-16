@@ -1,5 +1,5 @@
 import { useState } from "react";
-import demoGradCam from "@/assets/demo-gradcam.jpg";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,14 +38,7 @@ export const XAIAnalysis = ({
 }: XAIAnalysisProps) => {
   const [selectedResult, setSelectedResult] = useState<PredictionResult | null>(null);
 
-  // Demo results matching your exact CNN model classes
-  const demoResults: PredictionResult[] = [
-    { condition: "No finding", confidence: 78.4, severity: "low", color: "text-success" },
-    { condition: "Pneumonia", confidence: 18.7, severity: "medium", color: "text-warning" },
-    { condition: "Other disease", confidence: 2.9, severity: "low", color: "text-muted-foreground" }
-  ];
-
-  const displayResults = results.length > 0 ? results : demoResults;
+  const displayResults = results;
   const maxConfidence = Math.max(...displayResults.map(r => r.confidence));
   const primaryDiagnosis = displayResults.find(r => r.confidence === maxConfidence);
 
@@ -166,17 +159,18 @@ export const XAIAnalysis = ({
         <CardContent>
           <div className="space-y-4">
             <div className="relative rounded-lg overflow-hidden bg-muted/20 p-4">
-              <img 
-                src={heatmapUrl || demoGradCam} 
-                alt="XAI Heatmap showing AI attention areas" 
-                className="w-full h-auto rounded-lg"
-              />
-              {!heatmapUrl && (
-                <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-lg">
-                  <div className="text-center text-white">
+              {heatmapUrl ? (
+                <img 
+                  src={heatmapUrl} 
+                  alt="XAI Heatmap showing AI attention areas" 
+                  className="w-full h-auto rounded-lg"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-48 bg-muted/20 rounded-lg">
+                  <div className="text-center text-muted-foreground">
                     <Eye className="h-8 w-8 mx-auto mb-2" />
-                    <p className="text-sm font-medium">Demo Grad-CAM Visualization</p>
-                    <p className="text-xs opacity-75">Production heatmap will appear here</p>
+                    <p className="text-sm font-medium">Grad-CAM Unavailable</p>
+                    <p className="text-xs">Heatmap will appear when analysis completes</p>
                   </div>
                 </div>
               )}
