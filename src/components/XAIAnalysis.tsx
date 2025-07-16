@@ -58,7 +58,7 @@ export const XAIAnalysis = ({
           <div className="space-y-4">
             <div className="flex justify-between text-sm">
               <span>Processing with DenseNet121</span>
-              <span>94% accuracy</span>
+              <span>90% accuracy</span>
             </div>
             <Progress value={75} className="h-2" />
             <p className="text-center text-sm text-muted-foreground">

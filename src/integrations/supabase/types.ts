@@ -14,7 +14,110 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      model_predictions: {
+        Row: {
+          created_at: string
+          explanation_data: Json | null
+          heatmap_path: string | null
+          id: string
+          model_accuracy: number | null
+          model_version: string
+          no_finding_confidence: number
+          other_diseases_confidence: number
+          pneumonia_confidence: number
+          primary_confidence: number
+          primary_diagnosis: string
+          processing_time_ms: number | null
+          severity: string
+          updated_at: string
+          xray_image_id: string
+        }
+        Insert: {
+          created_at?: string
+          explanation_data?: Json | null
+          heatmap_path?: string | null
+          id?: string
+          model_accuracy?: number | null
+          model_version?: string
+          no_finding_confidence: number
+          other_diseases_confidence: number
+          pneumonia_confidence: number
+          primary_confidence: number
+          primary_diagnosis: string
+          processing_time_ms?: number | null
+          severity: string
+          updated_at?: string
+          xray_image_id: string
+        }
+        Update: {
+          created_at?: string
+          explanation_data?: Json | null
+          heatmap_path?: string | null
+          id?: string
+          model_accuracy?: number | null
+          model_version?: string
+          no_finding_confidence?: number
+          other_diseases_confidence?: number
+          pneumonia_confidence?: number
+          primary_confidence?: number
+          primary_diagnosis?: string
+          processing_time_ms?: number | null
+          severity?: string
+          updated_at?: string
+          xray_image_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "model_predictions_xray_image_id_fkey"
+            columns: ["xray_image_id"]
+            isOneToOne: false
+            referencedRelation: "xray_images"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      xray_images: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_size: number
+          file_type: string
+          id: string
+          processed_at: string | null
+          status: string
+          storage_path: string
+          updated_at: string
+          uploaded_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_size: number
+          file_type: string
+          id?: string
+          processed_at?: string | null
+          status?: string
+          storage_path: string
+          updated_at?: string
+          uploaded_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+          processed_at?: string | null
+          status?: string
+          storage_path?: string
+          updated_at?: string
+          uploaded_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

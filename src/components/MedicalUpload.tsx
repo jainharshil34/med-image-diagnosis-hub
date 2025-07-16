@@ -210,10 +210,10 @@ export const MedicalUpload = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Upload className="h-5 w-5 text-primary" />
-            Medical Image Upload
+            X-Ray Image Upload
           </CardTitle>
           <CardDescription>
-            Upload DICOM files or X-ray images for AI-powered analysis
+            Upload DICOM files or X-ray images for AI-powered chest analysis
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -232,7 +232,7 @@ export const MedicalUpload = () => {
             </div>
             
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              Drag & drop your medical images here
+              Drag & drop your X-ray images here
             </h3>
             <p className="text-muted-foreground mb-4">
               or click to browse your files

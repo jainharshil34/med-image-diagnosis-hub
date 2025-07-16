@@ -51,7 +51,7 @@ const Dashboard = () => {
   const stats = [
     { label: "Total Scans", value: "127", icon: FileX, trend: "+12%" },
     { label: "This Month", value: "23", icon: Calendar, trend: "+8%" },
-    { label: "Accuracy Rate", value: "94.2%", icon: TrendingUp, trend: "+2.1%" },
+    { label: "Accuracy Rate", value: "90.0%", icon: TrendingUp, trend: "+2.1%" },
     { label: "Processing Time", value: "1.2s", icon: Clock, trend: "-0.3s" },
   ];
 
@@ -251,7 +251,7 @@ const Dashboard = () => {
                     Advanced AI-Powered Medical Imaging
                   </h3>
                   <p className="text-lg mb-6 opacity-90">
-                    Our cutting-edge CNN model analyzes X-rays with 94% accuracy, helping healthcare professionals make faster, more accurate diagnoses.
+                    Our cutting-edge CNN model analyzes X-rays with 90% accuracy, helping healthcare professionals make faster, more accurate diagnoses.
                   </p>
                   <Button variant="outline" size="lg" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
                     Learn More

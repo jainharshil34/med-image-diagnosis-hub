@@ -26,7 +26,7 @@ const Index = () => {
       icon: Brain,
       title: "AI-Powered Analysis",
       description: "Advanced CNN models trained on millions of X-ray images for accurate disease detection",
-      stats: "94% accuracy",
+      stats: "90% accuracy",
       details: {
         fullDescription: "Our state-of-the-art Convolutional Neural Network (CNN) has been trained on over 10 million X-ray images from leading medical institutions worldwide. The model uses advanced deep learning techniques including transfer learning and ensemble methods to achieve industry-leading accuracy.",
         benefits: ["Detects subtle abnormalities invisible to human eye", "Reduces diagnostic errors by 75%", "Supports radiologists in making confident decisions", "Continuously learning from new data"],
@@ -82,7 +82,7 @@ const Index = () => {
   const stats = [
     { value: "1M+", label: "X-rays Analyzed", icon: Upload },
     { value: "500+", label: "Healthcare Partners", icon: Users },
-    { value: "94%", label: "Diagnostic Accuracy", icon: Award },
+    { value: "90%", label: "Diagnostic Accuracy", icon: Award },
     { value: "1.2s", label: "Average Processing", icon: Zap },
   ];
 
@@ -138,7 +138,7 @@ const Index = () => {
                   Diagnosis
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
-                  Our advanced CNN model analyzes X-ray images with 94% accuracy, helping healthcare 
+                  Our advanced CNN model analyzes X-ray images with 90% accuracy, helping healthcare 
                   professionals make faster, more accurate diagnoses and improve patient outcomes.
                 </p>
               </div>
@@ -151,7 +151,7 @@ const Index = () => {
                   </Link>
                 </Button>
                 <Button variant="outline_medical" size="xl" asChild>
-                  <Link to="/login">View Demo</Link>
+                  <Link to="/auth">View Demo</Link>
                 </Button>
               </div>
               
@@ -188,7 +188,7 @@ const Index = () => {
                     <CheckCircle className="h-5 w-5 text-success" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">94% Accuracy</p>
+                    <p className="font-semibold text-foreground">90% Accuracy</p>
                     <p className="text-sm text-muted-foreground">Clinically Validated</p>
                   </div>
                 </div>
@@ -292,7 +292,7 @@ const Index = () => {
               <Link to="/dashboard">Start Free Trial</Link>
             </Button>
             <Button variant="outline" size="xl" className="bg-white/10 border-white/20 text-white hover:bg-white/20" asChild>
-              <Link to="/login">Request Demo</Link>
+              <Link to="/auth">Get Started</Link>
             </Button>
           </div>
         </div>
